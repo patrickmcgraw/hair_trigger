@@ -30,12 +30,6 @@ module HairTrigger
             definitions << [name, statement, type]
           end
         end
-
-        # Luckily 'function' comes ahead of 'trigger' in the alphabet
-        # because we need the schema.rb to create functions first so
-        # when a trigger definition points to a function it will exist already
-        definitions = definitions.sort { |a,b| a.type.to_s.<=>(b.type.to_s) }
-
         {:builder => builder, :definitions => definitions}
       end
 
@@ -52,7 +46,12 @@ module HairTrigger
         migration_trigger_builders << migration[:builder]
       end
 
-      db_triggers.to_a.sort_by{ |t| (t.first + 'a').sub(/\(/, '_') }.each do |(name, definition)|
+      # We need the schema.rb to create functions first so
+      # when a trigger definition points to a function it will exist already
+      functions = db_triggers.to_a.select { |t| t.last.index('CREATE FUNCTION') }.sort_by{ |t| (t.first + 'a').sub(/\(/, '_') }
+      triggers = db_triggers.to_a.select { |t| t.last.index('CREATE FUNCTION') }.sort_by{ |t| (t.first + 'a').sub(/\(/, '_') }
+
+      (functions + triggers).each do |(name, definition)|
         if db_trigger_warnings[name]
           stream.puts "  # WARNING: generating adapter-specific definition for #{name} due to a mismatch."
           stream.puts "  # either there's a bug in hairtrigger or you've messed up your migrations and/or db :-/"
