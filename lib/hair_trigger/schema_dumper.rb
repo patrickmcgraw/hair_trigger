@@ -30,6 +30,12 @@ module HairTrigger
             definitions << [name, statement, type]
           end
         end
+
+        # Luckily 'function' comes ahead of 'trigger' in the alphabet
+        # because we need the schema.rb to create functions first so
+        # when a trigger definition points to a function it will exist already
+        definitions = definitions.sort { |a,b| a.type.to_s.<=>(b.type.to_s) }
+
         {:builder => builder, :definitions => definitions}
       end
 
