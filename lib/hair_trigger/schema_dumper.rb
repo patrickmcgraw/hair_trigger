@@ -51,8 +51,8 @@ module HairTrigger
       puts "From Hairtrigger:"
       puts db_triggers.to_a.inspect
       puts ">>>>>>>>>>>>>>>>>>>"
-      functions = db_triggers.to_a.select { |t| t.last.index('CREATE FUNCTION') }.sort_by{ |t| (t.first + 'a').sub(/\(/, '_') }
-      triggers = db_triggers.to_a.select { |t| t.last.index('CREATE FUNCTION') }.sort_by{ |t| (t.first + 'a').sub(/\(/, '_') }
+      functions = db_triggers.to_a.select { |t| t.last.index('FUNCTION') }.sort_by{ |t| (t.first + 'a').sub(/\(/, '_') }
+      triggers = db_triggers.to_a.select { |t| t.last.index('TRIGGER') }.sort_by{ |t| (t.first + 'a').sub(/\(/, '_') }
 
       (functions + triggers).each do |(name, definition)|
         if db_trigger_warnings[name]
