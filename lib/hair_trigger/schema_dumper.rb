@@ -48,6 +48,9 @@ module HairTrigger
 
       # We need the schema.rb to create functions first so
       # when a trigger definition points to a function it will exist already
+      puts "From Hairtrigger:"
+      puts db_triggers.to_a.inspect
+      puts ">>>>>>>>>>>>>>>>>>>"
       functions = db_triggers.to_a.select { |t| t.last.index('CREATE FUNCTION') }.sort_by{ |t| (t.first + 'a').sub(/\(/, '_') }
       triggers = db_triggers.to_a.select { |t| t.last.index('CREATE FUNCTION') }.sort_by{ |t| (t.first + 'a').sub(/\(/, '_') }
 
